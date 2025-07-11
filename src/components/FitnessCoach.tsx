@@ -1,192 +1,143 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Dumbbell, Clock, Target, Zap, CheckCircle, Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { Dumbbell, Clock, Target, CheckCircle, Star, Heart, Zap } from "lucide-react";
 
-interface WorkoutExercise {
+interface Exercise {
   name: string;
   sets: string;
   reps: string;
   description: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  muscleGroups: string[];
 }
 
-interface WorkoutPlan {
+interface ExerciseCategory {
   title: string;
-  duration: string;
-  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
-  equipment: string[];
-  exercises: WorkoutExercise[];
-  tips: string[];
+  description: string;
+  icon: any;
+  exercises: Exercise[];
 }
 
 const FitnessCoach = () => {
-  const [userInput, setUserInput] = useState("");
-  const [workoutPlan, setWorkoutPlan] = useState<WorkoutPlan | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const { toast } = useToast();
-
-  // Mock workout plans for demonstration
-  const mockWorkouts: Record<string, WorkoutPlan> = {
-    strength: {
-      title: "Strength Building Routine",
-      duration: "20 minutes",
-      difficulty: "Intermediate",
-      equipment: ["Dumbbells"],
+  const exerciseCategories: ExerciseCategory[] = [
+    {
+      title: "Upper Body",
+      description: "Build strength in your arms, chest, and back",
+      icon: Dumbbell,
       exercises: [
         {
-          name: "Dumbbell Squats",
+          name: "Push-ups",
           sets: "3",
-          reps: "12-15",
-          description: "Hold dumbbells at your sides, squat down keeping your back straight",
-          difficulty: "Beginner"
+          reps: "8-12",
+          description: "Classic chest and arm builder. Start on knees if needed.",
+          difficulty: "Beginner",
+          muscleGroups: ["Chest", "Arms", "Core"]
         },
         {
           name: "Dumbbell Rows",
           sets: "3",
           reps: "10-12",
-          description: "Bent over row, pull dumbbells to your chest, squeeze shoulder blades",
-          difficulty: "Intermediate"
+          description: "Bent over row, pull dumbbells to chest, squeeze shoulder blades",
+          difficulty: "Intermediate",
+          muscleGroups: ["Back", "Arms"]
         },
         {
-          name: "Dumbbell Press",
+          name: "Overhead Press",
           sets: "3",
-          reps: "8-12",
-          description: "Press dumbbells overhead, keep core engaged",
-          difficulty: "Intermediate"
+          reps: "8-10",
+          description: "Press dumbbells or barbell overhead, engage your core",
+          difficulty: "Intermediate",
+          muscleGroups: ["Shoulders", "Arms", "Core"]
+        },
+        {
+          name: "Pull-ups",
+          sets: "3",
+          reps: "5-8",
+          description: "Hang from bar and pull yourself up. Use assistance if needed.",
+          difficulty: "Advanced",
+          muscleGroups: ["Back", "Arms"]
+        }
+      ]
+    },
+    {
+      title: "Lower Body",
+      description: "Strengthen your legs and glutes",
+      icon: Target,
+      exercises: [
+        {
+          name: "Bodyweight Squats",
+          sets: "3",
+          reps: "12-15",
+          description: "Squat down keeping knees behind toes, chest up",
+          difficulty: "Beginner",
+          muscleGroups: ["Legs", "Glutes"]
         },
         {
           name: "Lunges",
-          sets: "2",
+          sets: "3",
           reps: "10 each leg",
-          description: "Step forward into lunge position, alternate legs",
-          difficulty: "Beginner"
+          description: "Step forward into lunge, alternate legs",
+          difficulty: "Beginner",
+          muscleGroups: ["Legs", "Glutes", "Core"]
+        },
+        {
+          name: "Goblet Squats",
+          sets: "3",
+          reps: "12-15",
+          description: "Hold dumbbell at chest, squat down keeping back straight",
+          difficulty: "Intermediate",
+          muscleGroups: ["Legs", "Glutes", "Core"]
+        },
+        {
+          name: "Single-leg Deadlifts",
+          sets: "3",
+          reps: "8 each leg",
+          description: "Balance on one leg, hinge at hip, touch floor",
+          difficulty: "Advanced",
+          muscleGroups: ["Legs", "Glutes", "Core"]
         }
-      ],
-      tips: [
-        "Rest 60-90 seconds between sets",
-        "Focus on proper form over heavy weight",
-        "Warm up for 5 minutes before starting"
       ]
     },
-    cardio: {
-      title: "High-Intensity Cardio Blast",
-      duration: "15 minutes",
-      difficulty: "Advanced",
-      equipment: ["No equipment"],
+    {
+      title: "Core & Cardio",
+      description: "Build core strength and cardiovascular fitness",
+      icon: Heart,
       exercises: [
         {
-          name: "Burpees",
+          name: "Plank",
           sets: "3",
-          reps: "30 seconds",
-          description: "Full body movement: squat, jump back, push-up, jump forward, jump up",
-          difficulty: "Advanced"
+          reps: "30-60 seconds",
+          description: "Hold plank position on forearms, keep body straight",
+          difficulty: "Beginner",
+          muscleGroups: ["Core", "Shoulders"]
         },
         {
           name: "Mountain Climbers",
           sets: "3",
-          reps: "45 seconds",
+          reps: "30 seconds",
           description: "Plank position, alternate bringing knees to chest rapidly",
-          difficulty: "Intermediate"
+          difficulty: "Intermediate",
+          muscleGroups: ["Core", "Cardio"]
         },
         {
-          name: "Jump Squats",
+          name: "Burpees",
+          sets: "3",
+          reps: "8-10",
+          description: "Squat, jump back to plank, push-up, jump forward, jump up",
+          difficulty: "Advanced",
+          muscleGroups: ["Full Body", "Cardio"]
+        },
+        {
+          name: "Russian Twists",
           sets: "3",
           reps: "20",
-          description: "Squat down then explode up into a jump",
-          difficulty: "Intermediate"
+          description: "Sit with feet up, twist torso side to side",
+          difficulty: "Intermediate",
+          muscleGroups: ["Core"]
         }
-      ],
-      tips: [
-        "Keep intensity high throughout",
-        "Rest 30 seconds between exercises",
-        "Stay hydrated during workout"
-      ]
-    },
-    beginner: {
-      title: "Beginner Full Body Workout",
-      duration: "25 minutes",
-      difficulty: "Beginner",
-      equipment: ["Dumbbells", "Mat"],
-      exercises: [
-        {
-          name: "Wall Push-ups",
-          sets: "2",
-          reps: "8-12",
-          description: "Stand arm's length from wall, push against wall and back",
-          difficulty: "Beginner"
-        },
-        {
-          name: "Bodyweight Squats",
-          sets: "2",
-          reps: "10-15",
-          description: "Squat down keeping knees behind toes, return to standing",
-          difficulty: "Beginner"
-        },
-        {
-          name: "Dumbbell Curls",
-          sets: "2",
-          reps: "12",
-          description: "Stand with dumbbells, curl up to shoulders and back down",
-          difficulty: "Beginner"
-        },
-        {
-          name: "Plank Hold",
-          sets: "2",
-          reps: "20-30 seconds",
-          description: "Hold plank position on forearms, keep body straight",
-          difficulty: "Beginner"
-        }
-      ],
-      tips: [
-        "Start slowly and focus on form",
-        "Take longer rests if needed",
-        "Progress gradually week by week"
       ]
     }
-  };
-
-  const generateWorkoutPlan = async () => {
-    if (!userInput.trim()) {
-      toast({
-        title: "Input Required",
-        description: "Please describe your fitness goals first!",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    
-    // Simulate AI processing time
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Simple logic to determine workout type based on input
-    const input = userInput.toLowerCase();
-    let selectedWorkout: WorkoutPlan;
-
-    if (input.includes('strength') || input.includes('strong') || input.includes('muscle')) {
-      selectedWorkout = mockWorkouts.strength;
-    } else if (input.includes('cardio') || input.includes('endurance') || input.includes('running')) {
-      selectedWorkout = mockWorkouts.cardio;
-    } else if (input.includes('beginner') || input.includes('start') || input.includes('new')) {
-      selectedWorkout = mockWorkouts.beginner;
-    } else {
-      // Default to strength training
-      selectedWorkout = mockWorkouts.strength;
-    }
-
-    setWorkoutPlan(selectedWorkout);
-    setIsGenerating(false);
-
-    toast({
-      title: "Workout Generated!",
-      description: "Your personalized workout plan is ready.",
-    });
-  };
+  ];
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -199,7 +150,7 @@ const FitnessCoach = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/30 p-6">
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-6xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-4 animate-fade-in">
           <div className="flex items-center justify-center gap-3 mb-4">
@@ -207,156 +158,107 @@ const FitnessCoach = () => {
               <Dumbbell className="h-8 w-8 text-white" />
             </div>
             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              AI Personal Fitness Coach
+              Physical Exercise Library
             </h1>
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Get a personalized workout plan tailored to your goals, available time, and equipment. 
-            Just describe what you want to achieve!
+            Explore our comprehensive collection of physical exercises organized by muscle groups and difficulty levels.
           </p>
         </div>
 
-        {/* Input Section */}
-        <Card className="bg-gradient-card shadow-primary animate-scale-in">
+        {/* Exercise Categories */}
+        <div className="grid gap-8">
+          {exerciseCategories.map((category, categoryIndex) => (
+            <Card key={categoryIndex} className="bg-gradient-card shadow-primary animate-scale-in">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3 text-2xl">
+                  <div className="p-2 bg-gradient-primary rounded-lg">
+                    <category.icon className="h-6 w-6 text-white" />
+                  </div>
+                  {category.title}
+                </CardTitle>
+                <CardDescription className="text-lg">
+                  {category.description}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {category.exercises.map((exercise, exerciseIndex) => (
+                    <Card key={exerciseIndex} className="bg-card shadow-lg hover:shadow-primary transition-shadow">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <h4 className="text-lg font-semibold">{exercise.name}</h4>
+                          <Badge className={getDifficultyColor(exercise.difficulty)}>
+                            <Star className="h-3 w-3 mr-1" />
+                            {exercise.difficulty}
+                          </Badge>
+                        </div>
+                        <p className="text-muted-foreground text-sm mb-3">{exercise.description}</p>
+                        
+                        <div className="flex gap-4 text-sm mb-3">
+                          <div className="flex items-center gap-1">
+                            <span className="font-medium">Sets:</span>
+                            <span className="text-primary font-semibold">{exercise.sets}</span>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="font-medium">Reps:</span>
+                            <span className="text-primary font-semibold">{exercise.reps}</span>
+                          </div>
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-1">
+                          {exercise.muscleGroups.map((muscle, muscleIndex) => (
+                            <Badge key={muscleIndex} variant="outline" className="text-xs">
+                              {muscle}
+                            </Badge>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {/* General Tips */}
+        <Card className="bg-accent/10 border-accent/20">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-primary" />
-              Tell me about your fitness goals
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Zap className="h-5 w-5 text-accent" />
+              General Exercise Tips
             </CardTitle>
-            <CardDescription>
-              Describe your goals, available time, and equipment (e.g., "I want to get stronger, I have 20 minutes a day, and a pair of dumbbells")
-            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <Textarea
-              placeholder="I want to get stronger, I have 20 minutes a day, and a pair of dumbbells..."
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-              className="min-h-[120px] resize-none"
-            />
-            <Button 
-              onClick={generateWorkoutPlan}
-              disabled={isGenerating}
-              variant="hero"
-              size="xl"
-              className="w-full"
-            >
-              {isGenerating ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                  Generating your perfect workout...
-                </>
-              ) : (
-                <>
-                  <Zap className="h-5 w-5" />
-                  Generate Workout Plan
-                </>
-              )}
-            </Button>
+          <CardContent>
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Always warm up before exercising</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Focus on proper form over heavy weight</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Rest 48-72 hours between training same muscle groups</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Stay hydrated throughout your workout</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Progress gradually to avoid injury</span>
+              </div>
+              <div className="flex items-start gap-2">
+                <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
+                <span className="text-sm">Listen to your body and rest when needed</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
-
-        {/* Workout Plan Display */}
-        {workoutPlan && (
-          <div className="space-y-6 animate-fade-in">
-            {/* Plan Overview */}
-            <Card className="bg-gradient-card shadow-primary">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle className="text-2xl mb-2">{workoutPlan.title}</CardTitle>
-                    <CardDescription>Your personalized workout plan</CardDescription>
-                  </div>
-                  <Badge className={getDifficultyColor(workoutPlan.difficulty)}>
-                    <Star className="h-3 w-3 mr-1" />
-                    {workoutPlan.difficulty}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Duration:</span>
-                    <span>{workoutPlan.duration}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Dumbbell className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Equipment:</span>
-                    <span>{workoutPlan.equipment.join(', ')}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Exercises:</span>
-                    <span>{workoutPlan.exercises.length} exercises</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Exercises */}
-            <div className="grid gap-4">
-              <h3 className="text-xl font-semibold flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-accent" />
-                Exercises
-              </h3>
-              {workoutPlan.exercises.map((exercise, index) => (
-                <Card key={index} className="bg-card shadow-lg hover:shadow-primary transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <h4 className="text-lg font-semibold">{exercise.name}</h4>
-                      <Badge variant="outline" className={getDifficultyColor(exercise.difficulty)}>
-                        {exercise.difficulty}
-                      </Badge>
-                    </div>
-                    <p className="text-muted-foreground mb-3">{exercise.description}</p>
-                    <div className="flex gap-4 text-sm">
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">Sets:</span>
-                        <span className="text-primary font-semibold">{exercise.sets}</span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <span className="font-medium">Reps:</span>
-                        <span className="text-primary font-semibold">{exercise.reps}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Tips */}
-            <Card className="bg-accent/10 border-accent/20">
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Zap className="h-5 w-5 text-accent" />
-                  Pro Tips
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2">
-                  {workoutPlan.tips.map((tip, index) => (
-                    <li key={index} className="flex items-start gap-2">
-                      <CheckCircle className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{tip}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            {/* Action Buttons */}
-            <div className="flex gap-4 justify-center">
-              <Button variant="workout" size="lg">
-                <CheckCircle className="h-4 w-4" />
-                Start Workout
-              </Button>
-              <Button variant="outline" size="lg" onClick={() => setWorkoutPlan(null)}>
-                Generate New Plan
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
